@@ -51,13 +51,13 @@ public class Lesson {
         return bookedLearners.size() < capacity;
     }
 
-    public boolean bookLesson(Learner learner) {
-        if (hasVacancy() && learner.canBookLesson(gradeLevel)) {
-            bookedLearners.add(learner);
-            return true;
-        }
-        return false;
-    }
+//    public boolean bookLesson(Learner learner) {
+//        if (hasVacancy() && learner.canBookLesson(gradeLevel)) {
+//            bookedLearners.add(learner);
+//            return true;
+//        }
+//        return false;
+//    }
 
     public boolean cancelBooking(Learner learner) {
         return bookedLearners.remove(learner);
@@ -69,7 +69,7 @@ public class Lesson {
 
     @Override
     public String toString() {
-        return "src.main.java.model.Lesson{" +
+        return "Lesson{" +
                 "day=" + day +
                 ", timeSlot=" + timeSlot +
                 ", gradeLevel=" + gradeLevel +
