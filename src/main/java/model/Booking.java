@@ -6,7 +6,6 @@ public class Booking {
     private Learner learner;
     private Lesson lesson;
     private LocalDate startDate;
-    private LocalDate endDate;
 
     public Learner getLearner() {
         return learner;
@@ -20,9 +19,6 @@ public class Booking {
         return startDate;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
 
     public void setLearner(Learner learner) {
         this.learner = learner;
@@ -36,15 +32,11 @@ public class Booking {
         this.startDate = startDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
 
-    public Booking(Learner learner, Lesson lesson, LocalDate startDate, LocalDate endDate) {
+    public Booking(Learner learner, Lesson lesson, LocalDate startDate) {
         this.learner = learner;
         this.lesson = lesson;
         this.startDate = startDate;
-        this.endDate = endDate;
     }
 
     public Booking() {
@@ -56,7 +48,6 @@ public class Booking {
                 "learner=" + learner +
                 ", lesson=" + lesson +
                 ", startDate=" + startDate +
-                ", endDate=" + endDate +
                 '}';
     }
 }

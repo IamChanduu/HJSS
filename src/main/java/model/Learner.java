@@ -3,6 +3,7 @@ package src.main.java.model;
 public class Learner {
     private String name;
     private String gender;
+    private String emaill;
     private int age;
     private String emergencyContact;
     private int gradeLevel;
@@ -24,6 +25,14 @@ public class Learner {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getEmaill() {
+        return emaill;
+    }
+
+    public void setEmaill(String emaill) {
+        this.emaill = emaill;
     }
 
     public int getAge() {
@@ -74,9 +83,10 @@ public class Learner {
         this.attendedLessons = attendedLessons;
     }
 
-    public Learner(String name, String gender, int age, String emergencyContact, int gradeLevel, int bookedLessons, int canceledLessons, int attendedLessons) {
+    public Learner(String name, String gender, String emaill, int age, String emergencyContact, int gradeLevel, int bookedLessons, int canceledLessons, int attendedLessons) {
         this.name = name;
         this.gender = gender;
+        this.emaill = emaill;
         this.age = age;
         this.emergencyContact = emergencyContact;
         this.gradeLevel = gradeLevel;
@@ -93,6 +103,7 @@ public class Learner {
         return "Learner{" +
                 "name='" + name + '\'' +
                 ", gender='" + gender + '\'' +
+                ", emaill='" + emaill + '\'' +
                 ", age=" + age +
                 ", emergencyContact='" + emergencyContact + '\'' +
                 ", gradeLevel=" + gradeLevel +

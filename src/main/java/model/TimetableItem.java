@@ -3,8 +3,17 @@ package src.main.java.model;
 import java.time.LocalDate;
 
 public class TimetableItem {
+    int timetabelItemId;
     private Lesson lesson;
     private LocalDate lessonDate;
+
+    public int getTimetabelItemId() {
+        return timetabelItemId;
+    }
+
+    public void setTimetabelItemId(int timetabelItemId) {
+        this.timetabelItemId = timetabelItemId;
+    }
 
     public Lesson getLesson() {
         return lesson;
@@ -22,18 +31,20 @@ public class TimetableItem {
         this.lessonDate = lessonDate;
     }
 
-    public TimetableItem(Lesson lesson, LocalDate lessonDate) {
-        this.lesson = lesson;
-        this.lessonDate = lessonDate;
+    public TimetableItem() {
     }
 
-    public TimetableItem() {
+    public TimetableItem(int timetabelItemId, Lesson lesson, LocalDate lessonDate) {
+        this.timetabelItemId = timetabelItemId;
+        this.lesson = lesson;
+        this.lessonDate = lessonDate;
     }
 
     @Override
     public String toString() {
         return "TimetableItem{" +
-                "lesson=" + lesson +
+                "timetabelItemId=" + timetabelItemId +
+                ", lesson=" + lesson +
                 ", lessonDate=" + lessonDate +
                 '}';
     }

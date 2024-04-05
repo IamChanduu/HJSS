@@ -2,14 +2,12 @@ package src.main.java;
 
 import src.main.java.enums.DayOfWeek;
 import src.main.java.enums.TimeSlot;
-import src.main.java.model.Coach;
-import src.main.java.model.Learner;
-import src.main.java.model.Lesson;
-import src.main.java.model.TimetableItem;
+import src.main.java.model.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class SwimmingLessonManagement {
@@ -18,6 +16,7 @@ public class SwimmingLessonManagement {
     private List<Learner> learners;
     private List<Coach> coaches;
     private List<TimetableItem> timetableItems;
+    private List<Booking> bookings;
 
     public List<Learner> getLearners() {
         return learners;
@@ -32,6 +31,7 @@ public class SwimmingLessonManagement {
         this.learners = new ArrayList<>();
         this.coaches = new ArrayList<>();
         this.timetableItems = new ArrayList<>();
+        this.bookings = new ArrayList<>();
     }
 
     public void createSampleLessons() {
@@ -55,17 +55,19 @@ public class SwimmingLessonManagement {
 
 // Define weekdays and weekend separately
         int[] weekdays = {0, 1, 2};
-        int[] weekend = {6, 7};
-
+        int[] weekend = {3, 4};
+        int ID = 0;
         for (int week = 1; week <= 4; week++) {
             // Loop through weekdays
             for (int day : weekdays) {
-                addTimeTableItem(day, date);
+                addTimeTableItem(ID, day, date);
+                ID++;
             }
 
             // Loop through weekend days (add 2 days for each)
             for (int day : weekend) {
-                addTimeTableItem(day, date.plusDays(2));
+                addTimeTableItem(ID, day, date.plusDays(2));
+                ID++;
             }
 
             // Update date to next week's beginning (add 7 days)
@@ -77,8 +79,8 @@ public class SwimmingLessonManagement {
         lessons.add(new Lesson(day, timeSlot, gradeLevel, coach));
     }
 
-    private void addTimeTableItem(int lessonId, LocalDate date) {
-        timetableItems.add(new TimetableItem(lessons.get(lessonId), date));
+    private void addTimeTableItem(int id, int lessonId, LocalDate date) {
+        timetableItems.add(new TimetableItem(id, lessons.get(lessonId), date));
     }
 
     private Coach getAvailableCoach() {
@@ -109,9 +111,9 @@ public class SwimmingLessonManagement {
         coaches.add(new Coach("Charlie"));
     }
 
-    public void addLearner(String name, String gender, int age, String emergencyContact, int gradeLevel) {
+    public void addLearner(String name, String gender, String email, int age, String emergencyContact, int gradeLevel) {
         if (isValidLearner(age, gradeLevel)) {
-            learners.add(new Learner(name, gender, age, emergencyContact, gradeLevel, 0, 0, 0));
+            learners.add(new Learner(name, gender, email, age, emergencyContact, gradeLevel, 0, 0, 0));
         } else {
             System.out.println("Invalid learner details. Age must be between 4 and 11, grade level between 0 and 5.");
         }
@@ -150,19 +152,20 @@ public class SwimmingLessonManagement {
 
     public void viewTimeTable() {
 
-        System.out.println("+--------+----------+------------+--------+-----------------+-----------------+");
-        System.out.println("| Day     | Time Slot| Grade Level | Coach  | Booked Learners | Date");
-        System.out.println("+--------+----------+------------+--------+-----------------+-----------------+");
+        System.out.println("+--------+--------+----------+------------+--------+-----------------+-----------------+");
+        System.out.println("| ID     | Day     | Time Slot| Grade Level | Coach  | Booked Learners | Date");
+        System.out.println("+--------+--------+----------+------------+--------+-----------------+-----------------+");
 
         String currentDay = "";
         for (TimetableItem timetableItem : timetableItems) {
             String day = timetableItem.getLesson().getDay().toString();
             if (!day.equals(currentDay)) {
-                System.out.println("+--------+----------+------------+--------+-----------------+-----------------+");  // Print a separator for different days
+                System.out.println("+--------+--------+----------+------------+--------+-----------------+-----------------+");  // Print a separator for different days
                 currentDay = day;
             }
 
-            System.out.printf("| %-8s | %-10s | %-12s | %-7s | %-15s | %-15s |\n",
+            System.out.printf("| %-3s | %-8s | %-10s | %-12s | %-7s | %-15s | %-15s |\n",
+                    timetableItem.getTimetabelItemId(),
                     day,
                     timetableItem.getLesson().getTimeSlot(),
                     timetableItem.getLesson().getGradeLevel(),
@@ -182,21 +185,34 @@ public class SwimmingLessonManagement {
 
     public void viewLesson() {
         System.out.println("Lessons");
+        System.out.println("+----------------------+-------------------+---------+-----------+----------+");
+        System.out.println("| Day                 | Time Slot         | Grade  | Coach     | Capacity |");
         for (Lesson lesson : lessons) {
-            System.out.println(lesson.toString());
+            System.out.println("+----------------------+-------------------+---------+-----------+----------+");
+            System.out.printf("| %-20s | %-18s | %-6d | %-9s | %-8d |\n",
+                    lesson.getDay().toString(), lesson.getTimeSlot(), lesson.getGradeLevel(), lesson.getCoach().getName(), lesson.getCapacity());
+            System.out.println("+----------------------+-------------------+---------+-----------+----------+");
         }
     }
 
-//    public boolean bookLesson(Learner learner, int gradeLevel, DayOfWeek day, TimeSlot timeSlot) {
-//        for (Lesson lesson : lessons) {
-//            if (lesson.getDay() == day && lesson.getTimeSlot() == timeSlot && lesson.getGradeLevel() == gradeLevel) {
-//                if (lesson.bookLesson(learner)) {
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
+    public void bookLesson(String email, String timetableid) {
+        try {
+            Optional<Learner> precentLearner = learners.stream().filter(learner -> learner.getEmaill().equals(email)).findAny();
+            Optional<TimetableItem> optionalTimetableItem = timetableItems.stream().filter(timetableItem -> timetableItem.getTimetabelItemId() == Integer.parseInt(timetableid)).findAny();
+            if (precentLearner.isPresent() && optionalTimetableItem.isPresent()) {
+                bookings.add(new Booking(precentLearner.get(), optionalTimetableItem.get().getLesson(), optionalTimetableItem.get().getLessonDate()));
+                learners.remove(precentLearner);
+                precentLearner.get().setBookedLessons(precentLearner.get().getBookedLessons() + 1);
+                learners.add(precentLearner.get());
+                System.out.println(learners.toString());
+                System.out.println("Booking SuccessFull");
+            } else {
+                System.out.println("Learner Or Timetable is not available");
+            }
+        } catch (Exception e) {
+            System.out.println("SomeThing Went Wrong" + e.getMessage().toString());
+        }
+    }
 
     public boolean cancelBooking(Learner learner, DayOfWeek day, TimeSlot timeSlot) {
         for (Lesson lesson : lessons) {
@@ -258,7 +274,9 @@ public class SwimmingLessonManagement {
         System.out.println("3 - Book A session");
         System.out.println("4 - Cancel the session");
         System.out.println("5 - Add Student");
-        System.out.println("6 - Exit");
+        System.out.println("6 - Review a Lesson");
+        System.out.println("7 - Print Report");
+        System.out.println("8 - Exit");
     }
 
     private double getRating(Learner learner, Lesson lesson) {
@@ -273,8 +291,8 @@ public class SwimmingLessonManagement {
         management.createSampleTimetable();
 
         // Add sample learners (assuming you have functions to get user input)
-        management.addLearner("Dhananjali", "F", 8, "1234567890", 2);
-        management.addLearner("Chandupa", "M", 6, "9876543210", 0);
+        management.addLearner("Dhananjali", "F", "Dhana@gmail.com", 8, "1234567890", 2);
+        management.addLearner("Chandupa", "M", "chandu@gmail.com", 6, "9876543210", 0);
 
         // Booking and cancellation examples (assuming you have functions to get user input for options)
 //        management.bookLesson(management.getLearners().get(0), 2, src.main.java.enums.DayOfWeek.WEDNESDAY, src.main.java.enums.TimeSlot.M5_6PM);
@@ -302,6 +320,16 @@ public class SwimmingLessonManagement {
                     break;
                 case 3:
                     System.out.println("Book A session");
+                    System.out.println("Enter your Email");
+                    String email = myObj.nextLine();
+                    if (management.verifyLearner(email)) {
+                        management.viewTimeTable();
+                        System.out.println("");
+                        System.out.println("Enter the Id of the timetable record you want to book: ");
+                        String timetableid = myObj.nextLine();
+                        management.bookLesson(email, timetableid);
+
+                    }
                     break;
                 case 4:
                     System.out.println("Cancel the session");
@@ -320,6 +348,10 @@ public class SwimmingLessonManagement {
                     break;
             }
         }
+    }
+
+    private boolean verifyLearner(String email) {
+        return learners.stream().anyMatch(learner -> learner.getEmaill().equals(email));
     }
 
 
