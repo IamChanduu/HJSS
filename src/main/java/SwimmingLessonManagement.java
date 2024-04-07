@@ -24,6 +24,14 @@ public class SwimmingLessonManagement {
         return lessons;
     }
 
+    public List<Coach> getCoaches() {
+        return coaches;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
     public SwimmingLessonManagement() {
         this.lessons = new ArrayList<>();
         this.learners = new ArrayList<>();
@@ -73,38 +81,16 @@ public class SwimmingLessonManagement {
         }
     }
 
-    private void addLesson(int id, DayOfWeek day, TimeSlot timeSlot, int gradeLevel, Coach coach) {
+    public void addLesson(int id, DayOfWeek day, TimeSlot timeSlot, int gradeLevel, Coach coach) {
         lessons.add(new Lesson(id, day, timeSlot, gradeLevel, coach));
     }
 
-    private void addTimeTableItem(int id, int lessonId, LocalDate date) {
+    public void addTimeTableItem(int id, int lessonId, LocalDate date) {
         timetableItems.add(new TimetableItem(id, lessons.get(lessonId), date));
     }
 
-    public void sortByTimetableID() {
-        Collections.sort(timetableItems, (o1, o2) -> Integer.compare(o1.getTimetabelItemId(), o2.getTimetabelItemId()));
-    }
-
-    private Coach getAvailableCoach() {
-        // Logic to assign available coach to the lesson (can be random selection)
-        for (Coach coach : coaches) {
-            // Check if coaches have any lessons assigned for the current day
-            boolean hasLessons = false;
-            for (Lesson lesson : lessons) {
-                if (lesson.getDay() == DayOfWeek.MONDAY && lesson.getCoach().equals(coach)) {
-                    hasLessons = true;
-                    break; // Exit inner loop if lesson found for the day
-                }
-            }
-            // If coach has no lessons assigned for the current day, return them
-            if (!hasLessons) {
-                return coach;
-            }
-        }
-
-        // If no available coach found, return null (handle this case in calling method)
-        System.out.println("Warning: No available coach found for this lesson.");
-        return null;
+    public void sortByTimetableID(List<TimetableItem> list) {
+        Collections.sort(list, (o1, o2) -> Integer.compare(o1.getTimetabelItemId(), o2.getTimetabelItemId()));
     }
 
     public void addCoach() {
@@ -124,14 +110,12 @@ public class SwimmingLessonManagement {
     private boolean isValidLearner(int age, int gradeLevel) {
         return age >= 4 && age <= 11 && gradeLevel >= 0 && gradeLevel <= 5;
     }
-
-
     public void viewTimeTable() {
 
         System.out.println("+--------+--------+----------+------------+--------+-----------------+-----------------+");
         System.out.println("| ID     | Day     | Time Slot| Grade Level | Coach  | Booked Learners | Date");
         System.out.println("+--------+--------+----------+------------+--------+-----------------+-----------------+");
-        sortByTimetableID();
+        sortByTimetableID(timetableItems);
         String currentDay = "";
         for (TimetableItem timetableItem : timetableItems) {
             String day = timetableItem.getLesson().getDay().toString();
@@ -209,50 +193,6 @@ public class SwimmingLessonManagement {
         System.out.println(this.bookings);
     }
 
-    public void printLearnerReport(Learner learner) {
-        int booked = 0;
-        int cancelled = 0;
-        int attended = 0;
-
-        System.out.println("src.main.java.model.Learner Report - " + learner.getName());
-        for (Lesson lesson : lessons) {
-            if (lesson.getBookedLearners().contains(learner)) {
-                booked++;
-                if (true) {
-                    attended++;
-                } else {
-                    cancelled++;
-                }
-            }
-        }
-        System.out.println("Booked Lessons: " + booked);
-        System.out.println("Cancelled Lessons: " + cancelled);
-        System.out.println("Attended Lessons: " + attended);
-    }
-
-    public void printCoachReport() {
-        System.out.println("src.main.java.model.Coach Report");
-        for (Coach coach : coaches) { // Iterate through learners list assuming it also stores coaches
-            double totalRating = 0.0;
-            int ratingCount = 0;
-            for (Lesson lesson : lessons) {
-                if (lesson.getCoach().equals(coach)) {
-                    for (Learner learner : lesson.getBookedLearners()) {
-                        // Logic to get rating from learner for this lesson's coach
-                        totalRating += getRating(learner, lesson);
-                        ratingCount++;
-                    }
-                }
-            }
-            if (ratingCount > 0) {
-                double averageRating = totalRating / ratingCount;
-                System.out.println("src.main.java.model.Coach: " + coach.getName() + ", Average Rating: " + averageRating);
-            } else {
-                System.out.println("src.main.java.model.Coach: " + coach.getName() + ", No Ratings Available.");
-            }
-        }
-    }
-
     public void printMenu() {
         System.out.println("Enter Your Choice: ");
         System.out.println("1 - View Time Table");
@@ -263,11 +203,6 @@ public class SwimmingLessonManagement {
         System.out.println("6 - Review a Lesson");
         System.out.println("7 - Print Report");
         System.out.println("8 - Exit");
-    }
-
-    private double getRating(Learner learner, Lesson lesson) {
-        // Implement logic to retrieve rating provided by learner for the specific lesson's coach
-        return 0.0;
     }
 
     public static void main(String[] args) {
