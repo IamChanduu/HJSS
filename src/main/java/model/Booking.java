@@ -3,9 +3,19 @@ package src.main.java.model;
 import java.time.LocalDate;
 
 public class Booking {
+    int bookingId;
     private Learner learner;
     private Lesson lesson;
     private LocalDate startDate;
+
+
+    public int getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
 
     public Learner getLearner() {
         return learner;
@@ -33,19 +43,21 @@ public class Booking {
     }
 
 
-    public Booking(Learner learner, Lesson lesson, LocalDate startDate) {
+    public Booking() {
+    }
+
+    public Booking(int bookingId, Learner learner, Lesson lesson, LocalDate startDate) {
+        this.bookingId = bookingId;
         this.learner = learner;
         this.lesson = lesson;
         this.startDate = startDate;
     }
 
-    public Booking() {
-    }
-
     @Override
     public String toString() {
         return "Booking{" +
-                "learner=" + learner +
+                "bookingId=" + bookingId +
+                ", learner=" + learner +
                 ", lesson=" + lesson +
                 ", startDate=" + startDate +
                 '}';
